@@ -23,6 +23,11 @@ class ConsoleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        var_dump('!');
+        $app = $this->getSilexApplication();
+
+        $test = $app['twitterService']->getLatestTweets('Secretsales');
+
+        var_dump($test);
+
     }
 }
