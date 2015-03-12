@@ -34,9 +34,6 @@ class ConsoleCommand extends Command
 
         $twitterResponse = $app['twitterService']->getLatestTweets($input->getOption('twitter:username'));
 
-        echo(json_encode($twitterResponse, true));
-        //exit;
-
         $twitterParsedResponse = $app['twitterResponseParseService']->parseResponse($twitterResponse);
 
         $this->output($twitterParsedResponse, $output);
