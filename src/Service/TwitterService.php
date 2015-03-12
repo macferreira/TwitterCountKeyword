@@ -2,6 +2,7 @@
 
 namespace TwitterCountKeyword\Service;
 
+use TwitterCountKeyword\TwitterInterface;
 use TwitterCountKeyword\Helper\TwitterServiceHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\Request;
@@ -12,12 +13,8 @@ use GuzzleHttp\Stream\Stream;
  * Class TwitterService
  * @package TwitterCountKeyword\Service
  */
-class TwitterService
+class TwitterService implements TwitterInterface
 {
-    const APP_ONLY_AUTH = 'https://api.twitter.com/oauth2/token';
-    const USER_TIMELINE = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-    const NUMBER_OF_TWEETS = 100;
-
     /**
      * @var TwitterServiceHelper
      */
@@ -50,7 +47,6 @@ class TwitterService
     public function __construct($apiKey, $apiSecret)
     {
         if (isset($apiKey) && isset($apiSecret)) {
-            $this->httpClient = new Client();
             $this->encodedApiKeyAndApiSecret = TwitterServiceHelper::encodeParams($apiKey, $apiSecret);
             $this->encodedApiKeyAndApiSecretBase64 = TwitterServiceHelper::encodeParamsBase64($apiKey, $apiSecret);
         } else {
@@ -60,6 +56,7 @@ class TwitterService
 
     public function getLatestTweets($twitterUsername)
     {
+        $this->httpClient = new Client();
         $this->authenticate();
         $request = new Request(
             'GET',

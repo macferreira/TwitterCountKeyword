@@ -10,6 +10,7 @@
   },
   "autoload": {
     "psr-4": {
+      "TwitterCountKeyword\\": "src/",
       "TwitterCountKeyword\\Command\\": "src/Command",
       "TwitterCountKeyword\\Service\\": "src/Service",
       "TwitterCountKeyword\\Helper\\": "src/Helper"

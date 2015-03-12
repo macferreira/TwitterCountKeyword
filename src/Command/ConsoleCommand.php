@@ -18,16 +18,48 @@ class ConsoleCommand extends Command
             ->setDescription(
                 'accepts twitter account name and outputs keyword frequency for the past 100 tweets'
             )
+            ->addOption('twitter:username', null, InputOption::VALUE_REQUIRED, 'twitter username to count keywords')
             ->setHelp('to do help text');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->verifyInputTwitterUsername($input->getOption('twitter:username'));
+
         $app = $this->getSilexApplication();
 
-        $test = $app['twitterService']->getLatestTweets('Secretsales');
+        $twitterResponse = $app['twitterService']->getLatestTweets($input->getOption('twitter:username'));
 
-        var_dump($test);
+        echo(json_encode($twitterResponse, true));
+        //exit;
 
+        $twitterParsedResponse = $app['twitterResponseParseService']->parseResponse($twitterResponse);
+
+        $this->output($twitterParsedResponse, $output);
+    }
+
+    /**
+     * @param $input
+     */
+    private function verifyInputTwitterUsername($input)
+    {
+        if (empty($input)) {
+            throw new \InvalidArgumentException('no twitter username supplied');
+        }
+    }
+
+    /**
+     * @param array $outputArray
+     * @param OutputInterface $output
+     */
+    private function output(array $outputArray, OutputInterface $output)
+    {
+        foreach ($outputArray as $outputVal) {
+            $output->writeln("<info>" . $outputVal . "</info>");
+        }
     }
 }
